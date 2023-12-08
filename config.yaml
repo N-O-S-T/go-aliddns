@@ -1,6 +1,12 @@
 AccessKeyId: xxxxxxxxxx #阿里云id
 AccessSecret: xxxxxxxxxxxxxxxxxxxx #阿里云token
 MainDomain: xxx.xxx #顶级域名
-    - SubDomain: xx #一级域名 SubDomain.MainDomain
-        ipv4: off
-        ipv6: on
+SubDomains:
+  - SubDomain: xx
+    ipv4: false
+    ipv6: true
+    cert: false
+  - SubDomain: cc
+    ipv4: false
+    ipv6: true
+    cert: false

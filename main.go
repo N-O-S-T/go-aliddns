@@ -10,7 +10,7 @@ import (
 )
 
 var isTest = flag.Bool("t", false, "测试用例，开启测试")
-var renewType = flag.String("rt", "ipv6", "设置检查类型，支持ipv4,cert,ipv6三种")
+var certIs = flag.Bool("ct", false, "启用certbot dns更新")
 var Key = flag.String("k", os.Getenv("CERTBOT_VALIDATION"), "自动获取系统certbot参数，也可以进行传参")
 
 func main() {
@@ -18,31 +18,34 @@ func main() {
 	if flag.Parsed() {
 		var qs = new(aliddns.QueryStruct)
 		var account Account
-		var dnsHeader = "_acme-challenge."
 
 		conf.MustLoad(*configFile, &account)
-
 		// 传参
 		qs.IsTest = *isTest
 		qs.AccessKeyId = account.AccessKeyId
 		qs.AccessSecret = account.AccessSecret
 		qs.MainDomain = account.MainDomain
-		qs.SubDomain = account.SubDomain
-
-		switch *renewType {
-		case "ipv4":
-			qs.ValueType = "A"
-			qs.GetOutBoundIP()
-		case "ipv6":
-			qs.ValueType = "AAAA"
-			qs.GetOutBoundIP()
-		case "cert":
-			qs.ValueType = "TXT"
-			qs.SubDomain = dnsHeader + qs.SubDomain
-			qs.Value = *Key
-		default:
-			return
+		for _, subDomainConf := range account.SubDomains {
+			qs.SubDomain = subDomainConf.SubDomain
+			// 此处暂未完成
+			if *certIs && subDomainConf.Cert {
+				dnsHeader := "_acme-challenge."
+				qs.ValueType = "TXT"
+				qs.SubDomain = dnsHeader + qs.SubDomain
+				qs.Value = *Key
+				qs.DnsCheck()
+				continue
+			}
+			if subDomainConf.Ipv4 {
+				qs.ValueType = "A"
+				qs.GetOutBoundIP()
+				qs.DnsCheck()
+			}
+			if subDomainConf.Ipv6 {
+				qs.ValueType = "AAAA"
+				qs.GetOutBoundIP()
+				qs.DnsCheck()
+			}
 		}
-		qs.DnsCheck()
 	}
 }
