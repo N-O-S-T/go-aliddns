@@ -1,7 +1,10 @@
-//go:build linux || darwin
+//go:build linux || darwin || windows
 
 package main
 
-import "flag"
+import (
+	"flag"
+	"os"
+)
 
-var configFile = flag.String("f", "/etc/ddns/config.yaml", "阿里云配置文件")
+var configFile = flag.String("f", os.Getenv("ALIDDNSCONFIG"), "阿里云配置文件")
