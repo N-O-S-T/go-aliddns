@@ -1,0 +1,14 @@
+[Unit]
+Description="Aliddns"
+Wants=network-online.target
+After=network-online.target network.target
+
+[Service]
+Type=exec
+ExecStart=aliddns
+# aliddns -rt ipv6 -f /xxxx/xxxx.yaml
+# default file: /etc/ddns/config.yaml
+
+[Install]
+WantedBy=multi-user.target
+DefaultInstance=default
