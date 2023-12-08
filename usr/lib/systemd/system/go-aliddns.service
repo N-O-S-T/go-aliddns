@@ -1,7 +1,7 @@
 Environment="ALIDDNSCONFIG=/etc/go-aliddns/config.yaml"
 
 [Unit]
-Description="Aliddns"
+Description="GO aliddns service"
 Wants=network-online.target
 After=network-online.target network.target
 

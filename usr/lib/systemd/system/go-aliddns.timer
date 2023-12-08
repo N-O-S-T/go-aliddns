@@ -1,7 +1,8 @@
 [Unit]
-Description=Aliddns Timer
+Description="Go Aliddns Timer"
 
 [Timer]
+# 年、月、日、时、分、秒
 OnCalendar=*-*-* 0/2:00:00
 Persistent=true
 
